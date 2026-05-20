@@ -1,0 +1,16 @@
+dev-docs/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.lmdb/
+*.lmdb-lock
+.env
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+
+
+/dev-docs
