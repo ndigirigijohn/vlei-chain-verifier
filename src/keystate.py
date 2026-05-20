@@ -1,5 +1,5 @@
 """
-Key state lookup from a local KERIpy LMDB database.
+Key state lookup and OOBI resolution using KERIpy.
 
 A key state describes the current cryptographic state of a KERI AID:
 which public keys are currently valid for signing, what the pre-rotation
@@ -24,9 +24,11 @@ get_key_state() can return its current state without any network call.
 """
 from __future__ import annotations
 
-import pathlib
-
-from keri.app import habbing
+from keri.app import habbing, oobiing
+from keri.app.directing import runController
+from keri.app.oobiing import Result
+from keri.help import helping
+from keri.recording import OobiRecord
 
 
 def get_key_state(aid: str, db_name: str = "verifier", db_base: str = "") -> dict | None:
@@ -101,3 +103,69 @@ def get_key_state_temp(aid: str, hby: habbing.Habery) -> dict | None:
         "signing_threshold": kever.tholder.sith,
         "witnesses": list(kever.wits),
     }
+
+
+def resolve_oobi(oobi_url: str, expire: float = 10.0) -> dict | None:
+    """Resolve an OOBI URL and return the AID's current key state.
+
+    An OOBI (Out-of-Band Introduction) URL pairs an AID with a network
+    location where its Key Event Log can be fetched and verified:
+
+        http://<witness-host>/oobi/<AID>/witness/<witness-AID>
+
+    This function:
+    1. Opens a temporary in-memory Habery (no files written to disk)
+    2. Queues the OOBI URL for resolution
+    3. Runs KERIpy's hio event loop for up to `expire` seconds
+    4. If the AID's KEL was fetched and verified, returns the key state
+    5. Returns None on any failure: unreachable endpoint, timeout, invalid KEL
+
+    Args:
+        oobi_url: OOBI URL string, e.g.
+                  "http://witnesshost/oobi/<AID>/witness/<WitnessAID>"
+        expire:   maximum seconds to wait for resolution (default 10.0)
+
+    Returns:
+        dict with key state fields (same structure as get_key_state_temp),
+        or None if resolution failed or timed out
+
+    Requires:
+        A reachable KERIA agent or witness endpoint at the URL.
+        Returns None (not an exception) when the endpoint is unreachable.
+
+    Notes on KERIpy's event loop:
+        KERIpy uses hio (synchronous coroutines), not asyncio. There is no
+        async/await. Resolution runs as a doer inside runController's Doist
+        event loop. The loop exits after `expire` seconds whether or not
+        resolution succeeded — check hby.kevers to see what was resolved.
+    """
+    try:
+        with habbing.openHby(name="oobi_resolver", temp=True) as hby:
+            oobiery = oobiing.Oobiery(hby=hby)
+
+            # Queue the OOBI URL for resolution
+            obr = OobiRecord(date=helping.nowIso8601())
+            hby.db.oobis.pin(keys=(oobi_url,), val=obr)
+
+            # Run the hio event loop — blocks for up to `expire` seconds
+            runController(doers=oobiery.doers, expire=expire)
+
+            # Check whether resolution succeeded
+            result = hby.db.roobi.get(keys=(oobi_url,))
+            if result is None or result.state != Result.resolved:
+                return None
+
+            # Return the key state of the first (and typically only) resolved AID
+            for pre, kever in hby.kevers.items():
+                return {
+                    "aid": pre,
+                    "sequence_number": kever.sn,
+                    "current_keys": [v.qb64 for v in kever.verfers],
+                    "next_key_digests": kever.ndigs,
+                    "signing_threshold": kever.tholder.sith,
+                    "witnesses": list(kever.wits),
+                }
+    except Exception:
+        pass
+
+    return None

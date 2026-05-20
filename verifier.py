@@ -19,6 +19,7 @@ import sys
 
 from src.acdc import parse_credential, extract_edge_saids
 from src.chain import display_chain, GLEIF_ROOT_AIDS
+from src.keystate import resolve_oobi
 from src.said import verify_said
 from src.schema import fetch_and_verify_schema, resolve_credential_type
 
@@ -140,12 +141,33 @@ def main() -> None:
         action="store_true",
         help="fetch and verify the schema from the GLEIF schema server (requires network)",
     )
+    parser.add_argument(
+        "--oobi",
+        metavar="URL",
+        action="append",
+        dest="oobis",
+        default=[],
+        help="resolve an OOBI URL to fetch an issuer's key state (requires live endpoint, repeatable)",
+    )
     args = parser.parse_args()
 
     print("\nvLEI Credential Chain Verifier")
     print(SEPARATOR)
 
     cred_raw = load_json(args.credential)
+
+    # Resolve any OOBIs before verification (requires live endpoint)
+    if args.oobis:
+        print()
+        for oobi_url in args.oobis:
+            print(f"Resolving OOBI: {oobi_url}")
+            state = resolve_oobi(oobi_url)
+            if state:
+                print(f"  ✓ Resolved AID: {state['aid']}")
+                print(f"    Keys: {state['current_keys']}")
+            else:
+                print(f"  ✗ Resolution failed or timed out — endpoint unreachable?")
+                print(f"    OOBI resolution needs a live KERIA agent or witness endpoint.")
 
     if args.chain:
         run_chain(cred_raw, args.chain, args.verify_schema)
