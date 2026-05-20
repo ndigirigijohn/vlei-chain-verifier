@@ -1,4 +1,5 @@
 dev-docs/
+.venv/
 __pycache__/
 *.pyc
 *.pyo
@@ -13,4 +14,3 @@ build/
 htmlcov/
 
 
-/dev-docs

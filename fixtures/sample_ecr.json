@@ -1,0 +1,22 @@
+{
+  "v": "ACDC10JSON00028e_",
+  "d": "EJXsNi5WCArXlJ24BcFm-Y7XieVgCaKf5qKaZ3kZG9RL",
+  "i": "EC7IUqgf03C_3I0Azd58KRE7XHc_69_DrYS_eO4EGlnL",
+  "ri": "EBfMDFWxNHYCQ4jbTnmFMwc2N2gHbA6N8LF1LFkpGMek",
+  "s": "EEy9PkikFcANV1l7EHukCeXqrzT1hNZjGlUk7wuMO5jw",
+  "a": {
+    "d": "EOr_lFWjETw6-aMDNTiP2HxPGcRiJM_zysDPBAojwbfa",
+    "i": "EL-4W7KYbBf7I-EzrXBoiVAyegbFJalQwC6CopSUhC4B",
+    "dt": "2024-01-15T12:00:00.000000+00:00",
+    "LEI": "254900OPPU84GM83MG36",
+    "personLegalName": "Jane Smith",
+    "engagementContextRole": "Chief Financial Officer"
+  },
+  "e": {
+    "d": "EM1kUYSehqp4vIzZGvFVC3MEisTS3ge1OYjWqvjEarHZ",
+    "le": {
+      "n": "EJcd4KY_LIdReU1WNLtpcPYJu7QNLt-DK6x5OBS8TFAl",
+      "s": "ENPXp1vQzRF6ELV5kl2uraw4MrmsTXgng1xdt4n2pHfn"
+    }
+  }
+}

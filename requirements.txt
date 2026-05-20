@@ -1,3 +1,8 @@
--e file:../keripy
+# hio 0.7.x is not yet on PyPI — install from source first
+git+https://github.com/ioflo/hio.git
+
+# keripy 2.0.0-dev6 is not yet on PyPI — install from source
+git+https://github.com/WebOfTrust/keripy.git
+
 requests>=2.32.0
 pytest>=8.0.0

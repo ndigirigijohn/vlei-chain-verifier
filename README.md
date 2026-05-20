@@ -59,15 +59,11 @@ Each edge reference is a SAID. Traversal means: resolve each SAID, verify it, fo
 
 ## Install
 
-This project requires a local clone of [KERIpy](https://github.com/WebOfTrust/keripy) as a sibling directory:
-
-```
-Projects/
-├── keripy/          # local KERIpy clone
-└── vlei-chain-verifier/
-```
+Requires Python 3.14+. Both `hio` and `keripy` are pre-release and not yet on PyPI, so they are installed directly from GitHub.
 
 ```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
