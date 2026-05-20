@@ -114,7 +114,14 @@ def main():
             edges=ecr_edges,
         )
 
-    chain = {"chain": [ecr_cred["d"], le_cred["d"], qvi_cred["d"]]}
+    chain = {
+        "files": [
+            "fixtures/sample_ecr.json",
+            "fixtures/sample_le.json",
+            "fixtures/sample_qvi.json",
+        ],
+        "gleif_root": gleif_aid,
+    }
 
     (FIXTURES / "sample_qvi.json").write_text(json.dumps(qvi_cred, indent=2))
     (FIXTURES / "sample_le.json").write_text(json.dumps(le_cred, indent=2))

@@ -1,7 +1,8 @@
 {
-  "chain": [
-    "EJXsNi5WCArXlJ24BcFm-Y7XieVgCaKf5qKaZ3kZG9RL",
-    "EJcd4KY_LIdReU1WNLtpcPYJu7QNLt-DK6x5OBS8TFAl",
-    "EMHf7D0Z3V7laEf1STviKwsBpGbKt84dgvJhTwpmmFWR"
-  ]
+  "files": [
+    "fixtures/sample_ecr.json",
+    "fixtures/sample_le.json",
+    "fixtures/sample_qvi.json"
+  ],
+  "gleif_root": "EGzi85A91B597MOBqgBoJTkyvWHhRSO-UWooYKEosk6c"
 }
